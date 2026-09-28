@@ -2,7 +2,7 @@
 
 ## 项目作用
 
-将 LVGL 8.3.11 接入 GD32F407VE 的显示、触摸和 1 ms tick，形成 MCU GUI 的最小移植结构。
+将 LVGL V8.3.11 接入 GD32F407VE 的显示、触摸和 1 ms tick，形成 MCU GUI 的最小移植结构。
 
 ## 软件关系
 
@@ -20,6 +20,10 @@ LVGL Core
 - `LV_MEM_CUSTOM = 0`，内部 heap 约 48 KB。
 - `lv_timer_handler()` 在 super loop 中执行。
 
+**Keywords:** `Porting` / `Draw Buffer` / `Flush Callback` / `Tick`
+
 上游 LVGL `demos/` 与 `examples/` 未复制，仅保留 core source 和工程所需接口。
 
 公开快照保留已核对许可的 Unscii ASCII 生成字体，排除无法建立再分发依据的其他生成字体；该工程不作为包含全部 LVGL 内置字体的独立构建发行包。
+
+相关文档：[LVGL Porting](../../docs/lvgl-porting.md) · [Rendering and Buffer](../../docs/rendering-and-buffer.md)

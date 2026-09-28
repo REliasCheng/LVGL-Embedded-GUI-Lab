@@ -1,6 +1,6 @@
 # LVGL 移植结构 | LVGL Porting
 
-主线工程使用 LVGL 8.3.11。移植层把 GD32F407VE 的显示、触摸和时间基准转换为 LVGL driver 接口。
+主线工程使用 LVGL V8.3.11。移植层把 GD32F407VE 的显示、触摸和时间基准转换为 LVGL v8 driver 接口；文档中的类型与 handler 名称均按该版本记录。
 
 ```text
 Hardware / BSP
@@ -41,9 +41,12 @@ Input port 注册 LVGL pointer device，读取 CST816T 的 pressed/released 状�
 
 这些调用位置来自现有工程，不代表所有平台都采用相同调度方式。
 
+当前工程使用 `lv_timer_handler()`、`lv_disp_drv_t`、`lv_indev_drv_t` 和 `lv_disp_draw_buf_t`。未使用 LVGL v9 display API，也不以旧版 `lv_task_handler()` 描述主线。
+
 ## 相关内容
 
 - [Display Pipeline](display-pipeline.md)
 - [Input and Events](input-and-events.md)
 - [FreeRTOS Integration](rtos-integration.md)
 - [LVGL Porting Project](../projects/03-lvgl-porting/)
+- 环境与版本：[Development Environment](development-environment.md)

@@ -10,4 +10,8 @@
 - Display/Input 仍连接 ST7789 与 CST816T。
 - UI 行为与 bare-metal SmartWatch 高度重复。
 
+**Keywords:** `CMSIS Pack` / `RTE` / `Reference`
+
 未知授权视觉资源、SquareLine 设计文件和构建输出未迁移；该快照不作为完整视觉资源包。
+
+相关文档：[LVGL Porting](../../../docs/lvgl-porting.md) · [Screen Navigation](../../../docs/screen-navigation.md)

@@ -1,6 +1,6 @@
 # Widget 与布局 | Widgets and Layout
 
-文档只记录代表工程中出现的组件，不列出 LVGL 全部 Widget API。
+文档只记录代表工程中实际出现的 Object、Widget、Style 与 Layout 关系，不扩展为 LVGL Widget API 列表。
 
 ## 实际 Widget
 
@@ -30,6 +30,8 @@ Screen
 
 SmartWatch 主线主要使用 SquareLine 生成的坐标和容器关系。LVGL 配置启用了 Flex/Grid，PC 示例中存在直接使用；不能据此把四页面 SmartWatch 描述成完整 Flex/Grid layout system。
 
+这一区分对应“库配置允许使用”与“当前 UI 实际采用”的边界。
+
 ## Style
 
 生成代码设置颜色、透明度、border、radius、padding 和字体。工程使用 default theme，但没有独立的 theme switching 或 dark-mode 管理层。
@@ -42,3 +44,4 @@ Widget event 负责页面切换、文本更新、动画和硬件 callback。当�
 
 - [Input and Events](input-and-events.md)
 - [Screen Navigation](screen-navigation.md)
+- 工程入口：[PC SDL Simulator](../projects/01-pc-simulator/) · [Bare-metal SmartWatch](../projects/04-baremetal-smartwatch/)

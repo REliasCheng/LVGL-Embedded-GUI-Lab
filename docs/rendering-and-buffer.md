@@ -1,6 +1,6 @@
 # 渲染与缓冲 | Rendering and Buffer
 
-主线显示端口采用局部双缓冲，而不是 full-frame framebuffer。
+主线显示端口把两个像素数组同时注册为局部 draw buffer，因此属于 partial double buffering，而不是 full-frame framebuffer。
 
 ## Buffer 结构
 
@@ -11,7 +11,7 @@ Color:    16 bit / 2 bytes per pixel
 Total:    9,600 bytes
 ```
 
-两个 buffer 通过 `lv_disp_draw_buf_init()` 注册。LVGL 可以在一个 buffer 被 flush 时准备另一个 buffer，但当前驱动的 flush 本身是同步轮询写入；这不等同于异步 DMA rendering。
+两个 buffer 作为 `buf1` 和 `buf2` 传给 `lv_disp_draw_buf_init()`。LVGL 可以在一个 buffer 被 flush 时准备另一个 buffer，但当前 flush 是同步轮询写入；两个数组本身不表示 DMA 或异步显示传输。
 
 ## Refresh 流程
 
@@ -33,3 +33,4 @@ Total:    9,600 bytes
 
 - [Display Pipeline](display-pipeline.md)
 - [LVGL Porting](lvgl-porting.md)
+- 工程入口：[LVGL Porting Template](../projects/03-lvgl-porting/)

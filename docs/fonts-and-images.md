@@ -10,7 +10,7 @@ LVGL Font C/BIN            LVGL Image Descriptor
 Widget Text                 Image / GIF Widget
 ```
 
-资料中存在 TTF 字体、转换后的字体 C 文件、image C array、图标、表盘背景和 GIF。部分资源由 SquareLine Studio 生成代码引用。
+原始资料包含 TTF 字体、转换后的字体 C 文件、image C array、图标、表盘背景和 GIF，部分资源由 SquareLine Studio 生成代码引用。这说明资源接入机制存在，但不构成公开授权依据。
 
 ## 公开迁移规则
 
@@ -21,8 +21,14 @@ Widget Text                 Image / GIF Widget
 
 因此 SmartWatch 工程公开目录保留 screen、event 和 callback 结构，但不是包含全部视觉资源的独立构建包。
 
-LVGL 内置 Montserrat / DejaVu / SimSun 与 Font Awesome 混合生成文件未进入公开快照；公开仓库保留的 Unscii notice 位于 [`third_party/licenses/unscii/`](../third_party/licenses/unscii/)。
+LVGL 内置 Montserrat / DejaVu / SimSun 与 Font Awesome 混合生成文件未进入公开快照；保留的 Unscii notice 位于 [`third_party/licenses/unscii/`](../third_party/licenses/unscii/)。
 
-## 后续补充条件
+## 当前工程入口
 
-真实补充 UI 图片前，需要同时满足：来源可追溯、许可允许公开、截图来自可复现工程。当前仓库没有发布 UI screenshot。
+- [Bare-metal SmartWatch](../projects/04-baremetal-smartwatch/)
+- [FreeRTOS SmartWatch](../projects/05-rtos-smartwatch/)
+- 相关页面结构：[Screen Navigation](screen-navigation.md)
+
+## 公开证据边界
+
+当前仓库没有发布 UI screenshot。后续补充前需同时满足来源可追溯、许可允许公开、截图来自可复现工程。

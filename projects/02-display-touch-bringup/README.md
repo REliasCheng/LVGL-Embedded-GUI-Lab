@@ -17,6 +17,10 @@ GD32F407VE <─ I²C0 / EXTI ─ CST816T Touch
 - `CST816T_Init()`：触摸控制器初始化。
 - I²C0 与 EXTI：触摸寄存器访问和事件输入。
 
+**Keywords:** `SPI0` / `ST7789` / `CST816T` / `I²C0` / `EXTI`
+
 ## 验证状态
 
 原始源码与 Keil 工程定义按白名单保留，构建产物已排除。本阶段未执行 Keil 自动构建或板端复测。
+
+相关文档：[Display Pipeline](../../docs/display-pipeline.md) · [Input and Events](../../docs/input-and-events.md)

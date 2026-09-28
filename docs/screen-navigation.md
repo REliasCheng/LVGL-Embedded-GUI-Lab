@@ -1,6 +1,6 @@
 # 页面导航 | Screen Navigation
 
-SmartWatch 工程族包含 `ui_Screen1` 至 `ui_Screen4`。源码没有为每个 screen 提供稳定的产品级命名，因此仓库按真实 object 名和组件职责描述。
+SmartWatch 工程族包含 `ui_Screen1` 至 `ui_Screen4`。源码没有为每个 screen 提供稳定的产品级名称，因此按真实 object 名、组件职责和已注册的 Gesture event 描述导航关系。
 
 ## 页面关系
 
@@ -40,3 +40,5 @@ Arc 的 value-changed callback 会更新 Label 并调用 `on_pwm_duty_update()`�
 
 - [Bare-metal SmartWatch](../projects/04-baremetal-smartwatch/)
 - [FreeRTOS SmartWatch](../projects/05-rtos-smartwatch/)
+- 输入层：[Input and Events](input-and-events.md)
+- 对象层：[Widgets and Layout](widgets-and-layout.md)

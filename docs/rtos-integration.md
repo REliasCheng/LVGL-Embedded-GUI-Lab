@@ -1,21 +1,16 @@
 # FreeRTOS 集成 | RTOS Integration
 
-一个 GD32F407VE 变体将 SmartWatch UI 放入 FreeRTOS V10.5.1 工程。该内容说明任务和 tick 的调用位置，不构成线程安全验证。
+一个 GD32F407VE 变体将 SmartWatch UI 放入 FreeRTOS V10.5.1 工程。该内容记录 GUI update task、handler task 和 tick hook 的实际分工，不构成线程安全验证。
 
 ## 当前执行结构
 
 ```text
-FreeRTOS Tick
-      ↓
-vApplicationTickHook()
-      ↓
-lv_tick_inc(1)
-
-task_lvgl
-  UI init / RTC / Widget update
-
-task_timer_handler
-  lv_timer_handler()
+FreeRTOS
+  ├── Tick Hook ───────────→ lv_tick_inc(1)
+  ├── task_lvgl ───────────→ UI init / RTC / Widget update
+  └── task_timer_handler ──→ lv_timer_handler()
+                                  ↓
+                         Display / Input processing
 ```
 
 工程使用 `xTaskCreate()` 创建 GUI update task 与 handler task，并通过 `vTaskDelay()` 控制执行周期。
@@ -30,7 +25,7 @@ task_timer_handler
 - RTOS-safe UI architecture；
 - verified concurrent GUI access。
 
-若后续增加个人实践，应在独立 `practice/` 中采用单 GUI task 或统一 mutex，并保留课程工程原样。
+文档不在现有结构上推断同步保证，也不修改原始工程来补充锁。
 
 ## 内存边界
 
@@ -40,3 +35,4 @@ LVGL 使用自身 internal allocator；FreeRTOS 使用独立 `heap_4`。两者�
 
 - [FreeRTOS SmartWatch](../projects/05-rtos-smartwatch/)
 - [FreeRTOS Embedded Lab](https://github.com/REliasCheng/FreeRTOS-Embedded-Lab)
+- 相关机制：[LVGL Porting](lvgl-porting.md)

@@ -13,6 +13,7 @@
     .text { font:13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#424a53; }
     .line { stroke:#57606a; stroke-width:2; marker-end:url(#arrow); }
   </style>
+  <rect width="1000" height="300" fill="#ffffff"/>
   <text class="head" x="500" y="34" text-anchor="middle">Hardware Input → LVGL Event → Application Callback</text>
   <rect class="accent" x="25" y="78" width="150" height="88"/>
   <text class="head" x="100" y="112" text-anchor="middle">CST816T</text>
@@ -33,8 +34,8 @@
   <text class="text" x="685" y="151" text-anchor="middle">Value Changed</text>
   <line class="line" x1="760" y1="122" x2="795" y2="122"/>
   <rect class="accent" x="805" y="78" width="170" height="88"/>
-  <text class="head" x="890" y="108" text-anchor="middle">Callback</text>
+  <text class="head" x="890" y="108" text-anchor="middle">Application</text>
   <text class="text" x="890" y="132" text-anchor="middle">Screen / UI state</text>
-  <text class="text" x="890" y="151" text-anchor="middle">hardware callback</text>
+  <text class="text" x="890" y="151" text-anchor="middle">callback boundary</text>
   <text class="text" x="500" y="225" text-anchor="middle">PC simulator replaces CST816T with SDL mouse, keyboard and mouse-wheel encoder drivers.</text>
 </svg>

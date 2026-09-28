@@ -1,6 +1,6 @@
 # 输入与事件 | Input and Events
 
-主线硬件输入使用 CST816T 电容触摸，PC simulator 使用 SDL 输入设备。
+主线硬件输入使用 CST816T 电容触摸，PC simulator 使用 SDL 输入设备。两条路径都在 LVGL indev 层汇合，再由 Event 连接 Widget callback 与页面状态。
 
 ![Input event flow](../assets/images/diagram/input-event-flow.svg)
 
@@ -26,6 +26,8 @@ Widget Event / Screen Gesture
 
 SDL driver 提供 mouse pointer、keyboard 和 mouse-wheel encoder，使 Widget event 可以在桌面环境中执行。
 
+PC SDL 工程提供 GUI input mapping，不模拟 CST816T、I²C0 或 MCU 中断行为。
+
 ## 实际事件
 
 代表 UI 使用：
@@ -39,6 +41,6 @@ SDL driver 提供 mouse pointer、keyboard 和 mouse-wheel encoder，使 Widget 
 
 ## 相关内容
 
-- [Screen Navigation](screen-navigation.md)
 - [Widgets and Layout](widgets-and-layout.md)
 - [Display / Touch Bring-up](../projects/02-display-touch-bringup/)
+- 下一层：[Screen Navigation](screen-navigation.md)
