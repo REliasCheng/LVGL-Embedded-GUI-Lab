@@ -1,0 +1,35 @@
+# Keil / ARM build output
+Objects/
+Listings/
+Debug/
+Release/
+*.o
+*.obj
+*.axf
+*.elf
+*.hex
+*.bin
+*.map
+*.d
+*.dep
+*.crf
+*.lst
+
+# CMake and host builds
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
+
+# IDE and temporary files
+.vscode/
+.idea/
+*.log
+*.tmp
+*.bak
+*.user
+*.suo
+*.swp
+.DS_Store
+Thumbs.db

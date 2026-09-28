@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-labelledby="title desc">
+  <title id="title">LVGL embedded GUI system stack</title>
+  <desc id="desc">Application UI above LVGL widgets, core, port layer, BSP and GD32F407VE hardware.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#57606a"/>
+    </marker>
+  </defs>
+  <style>
+    .box { fill:#f6f8fa; stroke:#57606a; stroke-width:2; rx:10; }
+    .accent { fill:#eaf2ff; stroke:#316dca; stroke-width:2; rx:10; }
+    .title { font:600 20px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#24292f; }
+    .text { font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; fill:#424a53; }
+    .arrow { stroke:#57606a; stroke-width:2; marker-end:url(#arrow); }
+  </style>
+  <rect class="accent" x="180" y="30" width="540" height="70"/>
+  <text class="title" x="450" y="60" text-anchor="middle">Application UI</text>
+  <text class="text" x="450" y="84" text-anchor="middle">Screen · Widget · Event Callback · Application State</text>
+  <line class="arrow" x1="450" y1="100" x2="450" y2="132"/>
+
+  <rect class="box" x="180" y="140" width="540" height="70"/>
+  <text class="title" x="450" y="170" text-anchor="middle">LVGL Object System</text>
+  <text class="text" x="450" y="194" text-anchor="middle">Widget · Style · Layout · Event · Animation</text>
+  <line class="arrow" x1="450" y1="210" x2="450" y2="242"/>
+
+  <rect class="box" x="180" y="250" width="540" height="70"/>
+  <text class="title" x="450" y="280" text-anchor="middle">LVGL Core 8.3.11</text>
+  <text class="text" x="450" y="304" text-anchor="middle">Renderer · Timer Handler · Memory · Draw Buffer</text>
+  <line class="arrow" x1="450" y1="320" x2="450" y2="352"/>
+
+  <rect class="box" x="100" y="360" width="330" height="70"/>
+  <text class="title" x="265" y="390" text-anchor="middle">Display Port</text>
+  <text class="text" x="265" y="414" text-anchor="middle">Flush Callback · ST7789 · SPI0</text>
+  <rect class="box" x="470" y="360" width="330" height="70"/>
+  <text class="title" x="635" y="390" text-anchor="middle">Input Port</text>
+  <text class="text" x="635" y="414" text-anchor="middle">Read Callback · CST816T · I²C0 / EXTI</text>
+  <line class="arrow" x1="265" y1="430" x2="265" y2="462"/>
+  <line class="arrow" x1="635" y1="430" x2="635" y2="462"/>
+
+  <rect class="accent" x="180" y="470" width="540" height="60"/>
+  <text class="title" x="450" y="498" text-anchor="middle">BSP / GD32F407VE · ARM Cortex-M4</text>
+  <text class="text" x="450" y="520" text-anchor="middle">240×280 LCD · Capacitive Touch · Basic Timer</text>
+</svg>
