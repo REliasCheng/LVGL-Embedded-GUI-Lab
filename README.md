@@ -1,141 +1,57 @@
-# LVGL 嵌入式 GUI 实验室
-## LVGL Embedded GUI Lab
+# LVGL-Embedded-GUI-Lab
 
-基于 LVGL V8.3.11 与 GD32F407VE / ARM Cortex-M4，围绕显示移植、触摸输入、渲染缓冲、事件系统和多页面 GUI 组织的嵌入式图形开发仓库。
+基于 LVGL V8.3.11 与 GD32F407VE / ARM Cortex-M4 的嵌入式 GUI 架构与显示系统实践仓库，重点展示显示刷新、触摸输入、渲染缓冲、事件处理和 UI 模块组织。
 
-![LVGL system stack](assets/images/architecture/lvgl-system-stack.svg)
+## Overview
 
-**GD32F407VE / Cortex-M4** · **LVGL V8.3.11** · **ST7789 240 × 280** · **CST816T** · **5 mainline + 1 reference**
+仓库围绕嵌入式 GUI 的完整软件路径组织独立工程：应用页面和 Widget 产生界面状态，LVGL Runtime 管理对象、样式、布局与事件，Display/Input Port 连接 ST7789 显示和 CST816T 触摸接口。
 
-## 👋 项目简介 | Overview
+PC SDL、裸机 GD32、CMSIS Pack 和 FreeRTOS 工程用于呈现不同运行环境下的接口组织方式。它们保持各自的工程边界，不被描述成连续升级完成的产品，也不据此声明线程安全保证或生产级 UI 能力。
 
-仓库从 PC SDL GUI simulation 进入 GD32 显示与触摸 bring-up，再连接 LVGL port、Widget/Event、多页面 UI 和 FreeRTOS 工程组织。核心不是罗列 Widget API，而是说明 GUI 从输入、对象系统到物理显示的完整数据路径。
+## Platform & Technology
 
-```text
-PC SDL Simulator
-        ↓
-Display / Touch Bring-up
-        ↓
-LVGL Porting
-        ↓
-Widget / Event / Screen Navigation
-        ↓
-Bare-metal / CMSIS Pack / FreeRTOS Integration
-```
+| Field | Value |
+| --- | --- |
+| Language | C |
+| Platform | GD32F407VE / ARM Cortex-M4; PC SDL simulation path |
+| Toolchain | Keil MDK-ARM, GCC, CMake, SDL2 |
+| Architecture | LVGL V8.3.11, Display, Input, Rendering, Event, bare-metal and FreeRTOS integration |
+| Verification | Project structure and interface review; build and hardware status are listed below |
 
-## ⚙ 技术范围 | Technical Scope
+## Architecture
 
-### 🖥 Display Pipeline
+![LVGL embedded GUI system stack](assets/images/architecture/lvgl-system-stack.svg)
 
-LVGL Renderer · Draw Buffer · Flush Callback · SPI0 · ST7789 · RGB565
+Application UI 保存页面、Widget 和应用状态；LVGL Object System 处理 Style、Layout、Event 与 Animation；LVGL Core 负责对象刷新和渲染；Display Port 与 Input Port 分别连接刷新回调和触摸读取；BSP/Driver Layer 再连接 ST7789、CST816T、SPI0、I²C0、EXTI 与基础定时器。
 
-### 👆 Input & Events
+当前显示路径使用局部 draw buffer 和同步 flush callback。仓库没有将 GD32 DMA、DMA2D、LTDC、GPU acceleration 或不存在的 UI 分层描述为当前实现。
 
-CST816T · LVGL Pointer Device · Event Callback · Widget Interaction
+## Key Features
 
-### 🎨 UI System
+| Capability | Implementation Entry |
+| --- | --- |
+| Display management | [Display and Touch Bring-up](projects/02-display-touch-bringup/) 与 [Display Pipeline](docs/display-pipeline.md) 展示 ST7789、SPI0 和 flush callback 路径 |
+| Rendering flow | [LVGL Porting](projects/03-lvgl-porting/) 与 [Rendering and Buffer](docs/rendering-and-buffer.md) 说明 draw buffer、失效区域和刷新接口 |
+| Input processing | [Input and Events](docs/input-and-events.md) 展示 CST816T 状态、坐标和 LVGL pointer device 数据之间的映射 |
+| Event-driven UI | [Bare-metal SmartWatch](projects/04-baremetal-smartwatch/) 与 [Screen Navigation](docs/screen-navigation.md) 组织 Widget callback、页面状态和界面切换 |
+| Runtime integration | [PC SDL Simulator](projects/01-pc-simulator/) 和 [FreeRTOS SmartWatch](projects/05-rtos-smartwatch/) 展示桌面与 MCU 运行环境中的接口边界 |
+| Resource boundary | [Fonts and Images](docs/fonts-and-images.md) 记录字体、图标、图片和生成资源的公开范围 |
 
-Widget · Style · Layout · Screen · Navigation
-
-### 🧠 Porting & Runtime
-
-Display/Input Port · Tick · `lv_timer_handler()` · Bare-metal · FreeRTOS Integration
-
-### 💻 PC Simulation
-
-SDL Display · Mouse · Keyboard · Mouse-wheel Encoder
-
-## 🖥 显示链路 | Display Pipeline
-
-![Display pipeline](assets/images/diagram/display-pipeline.svg)
-
-LVGL 先把失效区域渲染到两个 `240 × 10` 像素的局部 draw buffer，再由 flush callback 调用 ST7789 驱动，经 SPI0 同步写入 240 × 280 LCD。当前主线是 polling / synchronous flush，不包含 GD32 DMA、DMA2D、LTDC 或 GPU acceleration。
-
-详细说明：[Display Pipeline](docs/display-pipeline.md) · [Rendering and Buffer](docs/rendering-and-buffer.md)
-
-## 👆 输入与事件 | Input & Events
-
-![Input event flow](assets/images/diagram/input-event-flow.svg)
-
-CST816T 驱动提供触摸状态与坐标，LVGL input read callback 将其转换为 pointer device 数据；Event 再连接 Widget callback 与页面状态。PC simulator 以 SDL mouse、keyboard 和 mouse-wheel encoder 提供同一 LVGL input abstraction。
-
-详细说明：[Input and Events](docs/input-and-events.md)
-
-## ⌚ SmartWatch 工程族 | Project Family
-
-同一套四页面 SmartWatch UI 以不同运行环境和工程组织方式保留，不描述为一个连续升级完成的产品：
+## Project Structure
 
 ```text
-PC SDL Simulator        desktop GUI execution and input mapping
-Bare-metal GD32         super loop, timer tick and hardware callbacks
-CMSIS Pack Reference    RTE / Pack project organization
-FreeRTOS Integration    GUI update task, handler task and tick hook
+LVGL-Embedded-GUI-Lab/
+├── projects/01-pc-simulator/             # SDL 显示与输入接口
+├── projects/02-display-touch-bringup/    # ST7789 与 CST816T 驱动路径
+├── projects/03-lvgl-porting/             # Display、Input、Tick 与 Handler Port
+├── projects/04-baremetal-smartwatch/     # 裸机页面与事件组织
+├── projects/05-rtos-smartwatch/          # FreeRTOS GUI 任务结构
+├── projects/reference/                   # CMSIS Pack 工程组织参考
+├── docs/                                 # 显示、输入、渲染、事件与资源文档
+└── assets/images/                        # 已有自绘架构与数据流 SVG
 ```
 
-页面代码使用 `ui_Screen1` 至 `ui_Screen4`。部分 callback 直接访问 LED 等硬件接口，仓库按现有结构记录，不引入源码中不存在的 MVC/MVVM 分层。FreeRTOS 变体未发现 GUI mutex，因此不描述为 thread-safe LVGL integration。
-
-## 🚀 核心工程 | Featured Projects
-
-### [💻 PC SDL Simulator](projects/01-pc-simulator/)
-
-通过 SDL display/input 在桌面环境运行 LVGL UI 逻辑与事件处理，不模拟 MCU 硬件。
-
-`SDL` / `LVGL` / `Mouse` / `Keyboard`
-
-### [🖥 Display & Touch Bring-up](projects/02-display-touch-bringup/)
-
-连接 GD32F407VE、ST7789 显示和 CST816T 触摸的底层驱动链路。
-
-`SPI0` / `ST7789` / `CST816T`
-
-### [🧩 LVGL Porting](projects/03-lvgl-porting/)
-
-通过 Display、Input、Tick 与 Handler 接口连接 LVGL Core 和 MCU BSP。
-
-`Porting` / `Draw Buffer` / `Flush Callback` / `Tick`
-
-### [⌚ Bare-metal SmartWatch](projects/04-baremetal-smartwatch/)
-
-在裸机运行环境中组织四页面 UI、Widget event、RTC 更新和硬件 callback。
-
-`Screen` / `Event` / `Widget`
-
-### [⚙ FreeRTOS SmartWatch](projects/05-rtos-smartwatch/)
-
-记录 FreeRTOS V10.5.1 工程中的 GUI update task、handler task 与 tick hook。
-
-`FreeRTOS` / `GUI Task` / `LVGL`
-
-### [📦 CMSIS Pack Reference](projects/reference/cmsis-pack-smartwatch/)
-
-保留同一 GUI 在 CMSIS Pack / RTE 工程组织中的参考实现。
-
-`CMSIS Pack` / `RTE` / `Reference`
-
-## 📂 工程结构 | Repository Structure
-
-```text
-assets/images/       自有架构与数据流 SVG
-docs/                移植、显示、输入、UI 与 RTOS 机制说明
-projects/            5 个主线工程和 1 个参考工程
-  */course/          保持原始字节的白名单工程快照
-SOURCE_SELECTION_MANIFEST.csv
-MIGRATION_HASH_VERIFICATION.csv
-```
-
-## 🛠 开发环境 | Development Environment
-
-- LVGL V8.3.11
-- GD32F407VE / ARM Cortex-M4
-- Keil MDK-ARM / GigaDevice GD32F4xx DFP
-- GD32 Standard Peripheral Library
-- GCC / CMake / SDL2
-- SquareLine Studio 1.4.1 generated UI structure
-- FreeRTOS V10.5.1（单一 GD32 变体）
-
-PC SDL 工程在 CMake 配置阶段因本机缺少可发现的 SDL2 package 而停止，尚未进入源码编译。当前环境未发现 `UV4.exe`，5 个 Keil 工程未执行自动构建。工程文件完整和迁移哈希一致不等同于编译或板端运行通过。
-
-## 📖 技术文档 | Documentation
+## Documentation
 
 - [LVGL Porting](docs/lvgl-porting.md)
 - [Display Pipeline](docs/display-pipeline.md)
@@ -147,12 +63,17 @@ PC SDL 工程在 CMake 配置阶段因本机缺少可发现的 SDL2 package 而�
 - [FreeRTOS Integration](docs/rtos-integration.md)
 - [Development Environment](docs/development-environment.md)
 
-## 🔗 技术边界 | Repository Boundaries
+## Verification
 
-- [ARM Cortex-M Development Lab](https://github.com/REliasCheng/ARM-Cortex-M-Development-Lab)：MCU 外设、中断和固件层。
-- [FreeRTOS Embedded Lab](https://github.com/REliasCheng/FreeRTOS-Embedded-Lab)：任务调度、IPC、同步和 ISR-to-Task。
-- 本仓库：Display、Input、Rendering、Widget、Event、Screen 与 MCU GUI integration；不描述为 Embedded Linux GUI。
+| Verification Type | Status | Boundary |
+| --- | --- | --- |
+| Host Test | NOT VERIFIED | PC SDL 工程入口存在，但仓库未提供成功配置、构建和运行的可复核记录 |
+| Build Verification | NOT VERIFIED | CMake 与 Keil 工程定义存在，但仓库未提供与当前公开版本对应的成功构建记录 |
+| Hardware Validation | NOT VERIFIED | 仓库未提供可复核的 GD32F407VE、ST7789 或 CST816T 板端验证记录 |
+| Runtime Evidence | NOT INCLUDED | 仓库未提供本地运行截图、串口日志、显示刷新测量或触摸交互记录 |
 
-## 📜 来源与许可 | License
+工程入口、驱动接口和 UI 代码存在，不等同于主机构建成功、MCU 构建成功、显示触摸实测或性能保证。
 
-仓库新增文档和自有 SVG 使用根目录 [MIT License](LICENSE)。参考工程及第三方组件继续适用其原有声明，具体边界见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。公开快照仅保留已核对许可的 Unscii ASCII 生成字体；无法建立再分发依据的其他生成字体、图标、表盘背景和商品图片未纳入仓库。
+## License Boundary
+
+根目录 [MIT License](LICENSE) 仅适用于仓库新增并明确覆盖的 Markdown 文档和自绘 SVG。LVGL、GigaDevice/CMSIS 组件、FreeRTOS 引用、SquareLine Studio 生成的 UI 结构和 Unscii 字体数据继续适用各自的声明，具体边界见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 与 [Fonts and Images](docs/fonts-and-images.md)。
