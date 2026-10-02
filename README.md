@@ -67,10 +67,10 @@ LVGL-Embedded-GUI-Lab/
 
 | Verification Type | Status | Boundary |
 | --- | --- | --- |
-| Host Test | NOT VERIFIED | PC SDL 工程入口存在，但仓库未提供成功配置、构建和运行的可复核记录 |
-| Build Verification | NOT VERIFIED | CMake 与 Keil 工程定义存在，但仓库未提供与当前公开版本对应的成功构建记录 |
-| Hardware Validation | NOT VERIFIED | 仓库未提供可复核的 GD32F407VE、ST7789 或 CST816T 板端验证记录 |
-| Runtime Evidence | NOT INCLUDED | 仓库未提供本地运行截图、串口日志、显示刷新测量或触摸交互记录 |
+| Host Test | Not Provided | PC SDL 工程入口存在，但仓库未提供成功配置、构建和运行的可复核记录 |
+| Build Verification | Not Provided | CMake 与 Keil 工程定义存在，但仓库未提供与当前公开版本对应的成功构建记录 |
+| Hardware Validation | Not Provided | 仓库未提供可复核的 GD32F407VE、ST7789 或 CST816T 板端验证记录 |
+| Runtime Evidence | Not Provided | 仓库未提供本地运行截图、串口日志、显示刷新测量或触摸交互记录 |
 
 工程入口、驱动接口和 UI 代码存在，不等同于主机构建成功、MCU 构建成功、显示触摸实测或性能保证。
 
