@@ -2,19 +2,21 @@
 
 基于 LVGL V8.3.11 与 GD32F407VE / ARM Cortex-M4 的嵌入式 GUI 架构与显示系统实践仓库，重点展示显示刷新、触摸输入、渲染缓冲、事件处理和 UI 模块组织。
 
+**🖥️ GUI Runtime Pipeline**
+
 ![Embedded GUI pipeline](assets/images/architecture/portfolio-overview.svg)
 
-## Project Snapshot
+## GUI Snapshot
 
-| Field | Value |
+| GUI Focus | Current Scope |
 | --- | --- |
-| Language | C |
-| Platform | GD32F407VE / ARM Cortex-M4; PC SDL simulation path |
-| Toolchain | Keil MDK-ARM, GCC, CMake, SDL2 |
-| Architecture | LVGL V8.3.11, Display, Input, Rendering, Event, bare-metal and FreeRTOS integration |
-| Verification | Project structure and interface review; build and hardware status are listed below |
+| Runtime | LVGL V8.3.11；bare-metal、FreeRTOS 与 PC SDL paths |
+| Display | ST7789、SPI0、draw buffer、flush callback |
+| Input | CST816T、I²C0、EXTI、pointer device mapping |
+| GUI Pipeline | Objects / Events / Layout → Rendering → Display & Input Port |
+| Evidence | Project and interface review；build, rendering and hardware evidence not provided |
 
-> **Project status:** Architecture documented · Host, build, hardware, and runtime evidence not provided
+> 👆 **Evidence:** GUI interface paths documented · Build, rendering, input, and hardware evidence not provided
 
 ## Overview
 
@@ -41,7 +43,9 @@ Application UI 保存页面、Widget 和应用状态；LVGL Object System 处理
 | Runtime integration | [PC SDL Simulator](projects/01-pc-simulator/) 和 [FreeRTOS SmartWatch](projects/05-rtos-smartwatch/) 展示桌面与 MCU 运行环境中的接口边界 |
 | Resource boundary | [Fonts and Images](docs/fonts-and-images.md) 记录字体、图标、图片和生成资源的公开范围 |
 
-## Interface Preview
+## Architecture Preview
+
+### Display and Input Paths
 
 | Path | Code and Documentation Entry | Preview Boundary |
 | --- | --- | --- |
