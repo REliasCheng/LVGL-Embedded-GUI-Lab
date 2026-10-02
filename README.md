@@ -18,13 +18,13 @@
 
 > 👆 **Evidence:** GUI interface paths documented · Build, rendering, input, and hardware evidence not provided
 
-## Overview
+## 📌 Overview
 
 仓库围绕嵌入式 GUI 的完整软件路径组织独立工程：应用页面和 Widget 产生界面状态，LVGL Runtime 管理对象、样式、布局与事件，Display/Input Port 连接 ST7789 显示和 CST816T 触摸接口。
 
 PC SDL、裸机 GD32、CMSIS Pack 和 FreeRTOS 工程用于呈现不同运行环境下的接口组织方式。它们保持各自的工程边界，不被描述成连续升级完成的产品，也不据此声明线程安全保证或生产级 UI 能力。
 
-## Architecture
+## 🏗️ Architecture
 
 ![LVGL embedded GUI system stack](assets/images/architecture/lvgl-system-stack.svg)
 
@@ -32,7 +32,7 @@ Application UI 保存页面、Widget 和应用状态；LVGL Object System 处理
 
 当前显示路径使用局部 draw buffer 和同步 flush callback。仓库没有将 GD32 DMA、DMA2D、LTDC、GPU acceleration 或不存在的 UI 分层描述为当前实现。
 
-## Key Features
+## ✨ Key Features
 
 | Capability | Implementation Entry |
 | --- | --- |
@@ -43,7 +43,7 @@ Application UI 保存页面、Widget 和应用状态；LVGL Object System 处理
 | Runtime integration | [PC SDL Simulator](projects/01-pc-simulator/) 和 [FreeRTOS SmartWatch](projects/05-rtos-smartwatch/) 展示桌面与 MCU 运行环境中的接口边界 |
 | Resource boundary | [Fonts and Images](docs/fonts-and-images.md) 记录字体、图标、图片和生成资源的公开范围 |
 
-## Architecture Preview
+## 🎛️ Architecture Preview
 
 ### Display and Input Paths
 
@@ -55,7 +55,7 @@ Application UI 保存页面、Widget 和应用状态；LVGL Object System 处理
 
 该区域是接口与代码路径预览，不是运行截图，也不表示 PC SDL、显示刷新或触摸交互已经验证成功。
 
-## Project Structure
+## 📂 Project Structure
 
 ```text
 LVGL-Embedded-GUI-Lab/
@@ -69,7 +69,7 @@ LVGL-Embedded-GUI-Lab/
 └── assets/images/                        # 已有自绘架构与数据流 SVG
 ```
 
-## Documentation
+## 📚 Documentation
 
 - [LVGL Porting](docs/lvgl-porting.md)
 - [Display Pipeline](docs/display-pipeline.md)
@@ -81,21 +81,21 @@ LVGL-Embedded-GUI-Lab/
 - [FreeRTOS Integration](docs/rtos-integration.md)
 - [Development Environment](docs/development-environment.md)
 
-## Verification
+## 🧪 Verification
 
-### Host Test
+### 💻 Host Test
 
 **Status:** Not Provided. PC SDL 工程入口存在，但仓库未提供成功配置、构建和运行的可复核记录。
 
-### Build Verification
+### 🔨 Build Verification
 
 **Status:** Not Provided. CMake 与 Keil 工程定义存在，但仓库未提供与当前公开版本对应的成功构建记录。
 
-### Hardware Validation
+### 🔌 Hardware Validation
 
 **Status:** Not Provided. 仓库未提供可复核的 GD32F407VE、ST7789 或 CST816T 板端验证记录。
 
-### Runtime Evidence
+### 📊 Runtime Evidence
 
 **Status:** Not Provided. 仓库未提供本地运行截图、串口日志、显示刷新测量或触摸交互记录。
 
