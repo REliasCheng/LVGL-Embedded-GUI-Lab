@@ -2,13 +2,9 @@
 
 基于 LVGL V8.3.11 与 GD32F407VE / ARM Cortex-M4 的嵌入式 GUI 架构与显示系统实践仓库，重点展示显示刷新、触摸输入、渲染缓冲、事件处理和 UI 模块组织。
 
-## Overview
+![Embedded GUI pipeline](assets/images/architecture/portfolio-overview.svg)
 
-仓库围绕嵌入式 GUI 的完整软件路径组织独立工程：应用页面和 Widget 产生界面状态，LVGL Runtime 管理对象、样式、布局与事件，Display/Input Port 连接 ST7789 显示和 CST816T 触摸接口。
-
-PC SDL、裸机 GD32、CMSIS Pack 和 FreeRTOS 工程用于呈现不同运行环境下的接口组织方式。它们保持各自的工程边界，不被描述成连续升级完成的产品，也不据此声明线程安全保证或生产级 UI 能力。
-
-## Platform & Technology
+## Project Snapshot
 
 | Field | Value |
 | --- | --- |
@@ -17,6 +13,14 @@ PC SDL、裸机 GD32、CMSIS Pack 和 FreeRTOS 工程用于呈现不同运行环
 | Toolchain | Keil MDK-ARM, GCC, CMake, SDL2 |
 | Architecture | LVGL V8.3.11, Display, Input, Rendering, Event, bare-metal and FreeRTOS integration |
 | Verification | Project structure and interface review; build and hardware status are listed below |
+
+> **Project status:** Architecture documented · Host, build, hardware, and runtime evidence not provided
+
+## Overview
+
+仓库围绕嵌入式 GUI 的完整软件路径组织独立工程：应用页面和 Widget 产生界面状态，LVGL Runtime 管理对象、样式、布局与事件，Display/Input Port 连接 ST7789 显示和 CST816T 触摸接口。
+
+PC SDL、裸机 GD32、CMSIS Pack 和 FreeRTOS 工程用于呈现不同运行环境下的接口组织方式。它们保持各自的工程边界，不被描述成连续升级完成的产品，也不据此声明线程安全保证或生产级 UI 能力。
 
 ## Architecture
 
@@ -36,6 +40,16 @@ Application UI 保存页面、Widget 和应用状态；LVGL Object System 处理
 | Event-driven UI | [Bare-metal SmartWatch](projects/04-baremetal-smartwatch/) 与 [Screen Navigation](docs/screen-navigation.md) 组织 Widget callback、页面状态和界面切换 |
 | Runtime integration | [PC SDL Simulator](projects/01-pc-simulator/) 和 [FreeRTOS SmartWatch](projects/05-rtos-smartwatch/) 展示桌面与 MCU 运行环境中的接口边界 |
 | Resource boundary | [Fonts and Images](docs/fonts-and-images.md) 记录字体、图标、图片和生成资源的公开范围 |
+
+## Interface Preview
+
+| Path | Code and Documentation Entry | Preview Boundary |
+| --- | --- | --- |
+| Display | [Display Pipeline](docs/display-pipeline.md) | 查看 draw buffer、flush callback 与 ST7789 接口关系 |
+| Input | [Input and Events](docs/input-and-events.md) | 查看 CST816T 坐标到 LVGL pointer data 的映射 |
+| Navigation | [Screen Navigation](docs/screen-navigation.md) | 查看页面状态、Widget callback 与界面切换组织 |
+
+该区域是接口与代码路径预览，不是运行截图，也不表示 PC SDL、显示刷新或触摸交互已经验证成功。
 
 ## Project Structure
 
