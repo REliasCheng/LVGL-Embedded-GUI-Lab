@@ -1,10 +1,10 @@
 # 显示链路 | Display Pipeline
 
-GD32 主线使用 SPI0 将 draw buffer 中的像素写入 ST7789 控制器。LVGL renderer、flush callback 和物理传输分别承担区域渲染、刷新提交与 LCD 写入；硬件资料标注 ST7789V，工程驱动统一使用 ST7789 命名。
+本文以 GD32F407VE、SPI 与 ST7789 为参考说明显示链路。LVGL renderer、flush callback 和物理传输分别承担区域渲染、刷新提交与 LCD 写入；当前默认分支没有提供对应驱动实现。
 
 ![Display pipeline](../assets/images/diagram/display-pipeline.svg)
 
-## 主线配置
+## 参考配置
 
 - MCU：GD32F407VE / ARM Cortex-M4。
 - Display interface：SPI0 polling transfer。
@@ -30,15 +30,13 @@ SPI0 / LCD
 lv_disp_flush_ready()
 ```
 
-`flush_cb` 不是 renderer。它接收 LVGL 已渲染的区域和像素指针，在 `ST7789_Fill()` 返回后调用 `lv_disp_flush_ready()`，属于同步完成路径。主线没有异步 DMA completion callback，也没有 DMA2D、LTDC 或 GPU acceleration。
+`flush_cb` 不是 renderer。它接收 LVGL 已渲染的区域和像素指针；同步传输可在写入完成后调用 `lv_disp_flush_ready()`，异步传输则应在完成回调中通知。当前仓库不声明 DMA、DMA2D、LTDC 或 GPU acceleration 已实现。
 
 ## 硬件边界
 
-显示工程包含底层初始化和区域写入接口；本仓库不把通用 SPI 外设配置扩展成独立教程。底层外设基础对应 [ARM Cortex-M Development Lab](https://github.com/REliasCheng/ARM-Cortex-M-Development-Lab)。
+底层实现需要初始化显示控制器、设置写入区域并保证像素格式一致。本仓库不把通用 SPI 外设配置扩展成实现声明。底层外设基础可参考 [ARM Cortex-M Development Lab](https://github.com/REliasCheng/ARM-Cortex-M-Development-Lab)。
 
-## 相关工程
+## 相关内容
 
-- [Display / Touch Bring-up](../projects/02-display-touch-bringup/)
-- [LVGL Porting Template](../projects/03-lvgl-porting/)
 - [Rendering and Buffer](rendering-and-buffer.md)
 - 下一层：[Input and Events](input-and-events.md)

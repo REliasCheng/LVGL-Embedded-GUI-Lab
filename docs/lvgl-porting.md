@@ -1,6 +1,6 @@
 # LVGL 移植结构 | LVGL Porting
 
-主线工程使用 LVGL V8.3.11。移植层把 GD32F407VE 的显示、触摸和时间基准转换为 LVGL v8 driver 接口；文档中的类型与 handler 名称均按该版本记录。
+本文以 LVGL V8.3.11 为参考。移植层需要把显示、触摸和时间基准转换为 LVGL v8 driver 接口；当前默认分支不提供可构建实现。
 
 ```text
 Hardware / BSP
@@ -16,7 +16,7 @@ Application UI
 
 ## 初始化顺序
 
-工程中的基本顺序为：
+典型初始化顺序为：
 
 1. 初始化系统时钟、USART、I²C 和板级设备。
 2. 调用 `lv_init()` 初始化 LVGL core。
@@ -27,7 +27,7 @@ Application UI
 
 ## Display Port
 
-Display port 配置两个 `240 × 10` 像素 buffer，并注册 flush callback。`lv_conf.h` 定义 240 × 280、16-bit color 和 byte swap；port 文件中的 320 × 240 fallback 不会成为活动配置。
+Display port 需要配置 draw buffer 并注册 flush callback。分辨率、色深、byte swap 与 buffer 大小必须按实际显示控制器和内存预算确定。
 
 ## Input Port
 
@@ -39,14 +39,11 @@ Input port 注册 LVGL pointer device，读取 CST816T 的 pressed/released 状�
 - FreeRTOS：tick hook 调用 `lv_tick_inc(1)`，独立 task 调用 `lv_timer_handler()`。
 - PC：`SDL_GetTicks()` 作为 custom tick source。
 
-这些调用位置来自现有工程，不代表所有平台都采用相同调度方式。
-
-当前工程使用 `lv_timer_handler()`、`lv_disp_drv_t`、`lv_indev_drv_t` 和 `lv_disp_draw_buf_t`。未使用 LVGL v9 display API，也不以旧版 `lv_task_handler()` 描述主线。
+这些是 LVGL v8 的参考调用关系，不代表所有平台都采用相同调度方式，也不构成 LVGL v9 API 说明。
 
 ## 相关内容
 
 - [Display Pipeline](display-pipeline.md)
 - [Input and Events](input-and-events.md)
 - [FreeRTOS Integration](rtos-integration.md)
-- [LVGL Porting Project](../projects/03-lvgl-porting/)
 - 环境与版本：[Development Environment](development-environment.md)

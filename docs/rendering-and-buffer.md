@@ -1,6 +1,6 @@
 # 渲染与缓冲 | Rendering and Buffer
 
-主线显示端口把两个像素数组同时注册为局部 draw buffer，因此属于 partial double buffering，而不是 full-frame framebuffer。
+以下示例使用两个局部像素数组表达 partial double buffering，而不是 full-frame framebuffer。它是容量规划示例，不表示当前仓库包含实现。
 
 ## Buffer 结构
 
@@ -11,7 +11,7 @@ Color:    16 bit / 2 bytes per pixel
 Total:    9,600 bytes
 ```
 
-两个 buffer 作为 `buf1` 和 `buf2` 传给 `lv_disp_draw_buf_init()`。LVGL 可以在一个 buffer 被 flush 时准备另一个 buffer，但当前 flush 是同步轮询写入；两个数组本身不表示 DMA 或异步显示传输。
+两个 buffer 可作为 `buf1` 和 `buf2` 传给 `lv_disp_draw_buf_init()`。LVGL 可以在一个 buffer 被 flush 时准备另一个 buffer，但两个数组本身不表示 DMA 或异步显示传输。
 
 ## Refresh 流程
 
@@ -23,14 +23,13 @@ Total:    9,600 bytes
 
 ## 内存关系
 
-- LVGL internal allocator：主线模板约 48 KB，CMSIS/FreeRTOS 配置约 64 KB。
+- LVGL internal allocator：由 `lv_conf.h` 与实际对象规模决定。
 - Draw buffers：约 9.6 KB。
 - FreeRTOS 变体另有独立 RTOS heap。
 
-工程未提供 FPS、render time、CPU usage 或运行时 memory monitor 数据，因此文档只描述静态配置和调用关系。
+当前仓库未提供 FPS、render time、CPU usage 或运行时 memory monitor 数据，因此文档只描述静态配置和调用关系。
 
 ## 相关内容
 
 - [Display Pipeline](display-pipeline.md)
 - [LVGL Porting](lvgl-porting.md)
-- 工程入口：[LVGL Porting Template](../projects/03-lvgl-porting/)

@@ -1,6 +1,6 @@
 # 页面导航 | Screen Navigation
 
-SmartWatch 工程族包含 `ui_Screen1` 至 `ui_Screen4`。源码没有为每个 screen 提供稳定的产品级名称，因此按真实 object 名、组件职责和已注册的 Gesture event 描述导航关系。
+以下四页面关系是 UI 状态机设计示例，用于说明 Gesture event 与 screen transition 的组织方式；当前默认分支不包含对应 SquareLine 输出或运行 UI。
 
 ## 页面关系
 
@@ -15,7 +15,7 @@ ui_Screen2  ─────────────────> ui_Screen1
 ui_Screen1 ── swipe up / fade ──> ui_Screen4
 ```
 
-实际 `ui.c` 中：
+设计关系为：
 
 - Screen1 向左进入 Screen3。
 - Screen1 向右进入 Screen2。
@@ -30,15 +30,13 @@ ui_Screen1 ── swipe up / fade ──> ui_Screen4
 - Screen3：Button、LED 状态 Panel 与 Label。
 - Screen4：Arc、duty Label 与 GIF container。
 
-Arc 的 value-changed callback 会更新 Label 并调用 `on_pwm_duty_update()`；嵌入式工程中的该函数没有实际 PWM 实现，因此不能写成已完成硬件 PWM 控制。
+Arc 的 value-changed callback 可以更新 Label 并调用应用层接口；没有固件实现和硬件证据时，不能写成已完成 PWM 控制。
 
 ## 资源边界
 
-页面源码引用的部分 image/font 资源因授权信息不足没有发布。该文档描述导航和事件结构，不提供运行截图或完整视觉复现。
+当前默认分支没有发布 image/font 资源、页面源码、运行截图或完整视觉复现。
 
-## 相关工程
+## 相关内容
 
-- [Bare-metal SmartWatch](../projects/04-baremetal-smartwatch/)
-- [FreeRTOS SmartWatch](../projects/05-rtos-smartwatch/)
 - 输入层：[Input and Events](input-and-events.md)
 - 对象层：[Widgets and Layout](widgets-and-layout.md)

@@ -1,6 +1,6 @@
 # 开发环境 | Development Environment
 
-本文档记录公开工程实际使用的版本、平台与构建边界，不把工程文件存在等同于构建通过。
+本文档记录架构参考版本、平台与构建边界。当前默认分支不包含 LVGL、厂商库、SquareLine 输出或可构建工程。
 
 ## 主线平台
 
@@ -26,21 +26,19 @@
 
 未发现 GUI mutex，详见 [FreeRTOS Integration](rtos-integration.md)。
 
-## 构建状态
+## 验证状态
 
-- PC SDL：CMake 配置阶段因本机无法找到 SDL2 package 而停止，尚未进入源码编译。
-- Keil：当前环境未发现 `UV4.exe`，5 个工程未执行自动构建。
-- Hardware：未执行板端运行、触摸交互或显示刷新验证。
+- PC SDL：未提供可构建 simulator 或运行结果。
+- Keil：未提供可构建 MCU 工程。
+- Hardware：未提供板端运行、触摸交互或显示刷新证据。
 
-原始工程未为当前机器修改。“工程文件完整”和“迁移哈希一致”不表示编译或板端运行通过。
+架构说明、版本名称和文件清单都不能替代编译或板端运行证据。
 
 ## 参考平台
 
 Phase 1 还识别到 STM32F103RB、STM32F103ZE 与 ESP-IDF 参考资料。它们没有进入公开主体，以保持 GD32F407VE / LVGL 主线清晰。
 
-## 工程入口
+## 相关内容
 
-- [PC SDL Simulator](../projects/01-pc-simulator/)
-- [GD32 LVGL Porting](../projects/03-lvgl-porting/)
-- [FreeRTOS SmartWatch](../projects/05-rtos-smartwatch/)
-- 上一层：[FreeRTOS Integration](rtos-integration.md)
+- [FreeRTOS Integration](rtos-integration.md)
+- [LVGL Porting](lvgl-porting.md)

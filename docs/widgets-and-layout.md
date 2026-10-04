@@ -1,8 +1,8 @@
 # Widget 与布局 | Widgets and Layout
 
-文档只记录代表工程中实际出现的 Object、Widget、Style 与 Layout 关系，不扩展为 LVGL Widget API 列表。
+文档记录一组代表性的 Object、Widget、Style 与 Layout 关系，不扩展为 LVGL Widget API 列表，也不表示当前仓库包含对应 UI 实现。
 
-## 实际 Widget
+## Representative Widgets
 
 - Arc
 - Button
@@ -28,20 +28,19 @@ Screen
   └── Arc
 ```
 
-SmartWatch 主线主要使用 SquareLine 生成的坐标和容器关系。LVGL 配置启用了 Flex/Grid，PC 示例中存在直接使用；不能据此把四页面 SmartWatch 描述成完整 Flex/Grid layout system。
+坐标式页面、Flex 和 Grid 是不同布局策略；不能只因配置支持 Flex/Grid 就把一个坐标式页面描述成完整 Flex/Grid layout system。
 
-这一区分对应“库配置允许使用”与“当前 UI 实际采用”的边界。
+这一区分对应“库能力”与“具体 UI 实现”的边界。
 
 ## Style
 
-生成代码设置颜色、透明度、border、radius、padding 和字体。工程使用 default theme，但没有独立的 theme switching 或 dark-mode 管理层。
+Style 可以设置颜色、透明度、border、radius、padding 和字体。没有对应实现时，不声明 theme switching 或 dark-mode 管理层存在。
 
 ## Event 边界
 
-Widget event 负责页面切换、文本更新、动画和硬件 callback。当前结构没有 MVC、MVVM 或 MVP 分层，文档不引入源码中不存在的模式名称。
+Widget event 可负责页面切换、文本更新、动画和应用 callback。本文档不引入 MVC、MVVM 或 MVP 等未实现模式。
 
 ## 相关内容
 
 - [Input and Events](input-and-events.md)
 - [Screen Navigation](screen-navigation.md)
-- 工程入口：[PC SDL Simulator](../projects/01-pc-simulator/) · [Bare-metal SmartWatch](../projects/04-baremetal-smartwatch/)
