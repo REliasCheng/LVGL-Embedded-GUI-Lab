@@ -33,3 +33,9 @@ compile_commands.json
 *.swp
 .DS_Store
 Thumbs.db
+
+# Local LVGL archive and generated evidence
+build*/
+.local/
+third_party/*.tar.gz
+artifacts/
