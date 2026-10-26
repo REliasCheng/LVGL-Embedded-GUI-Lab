@@ -139,8 +139,7 @@ int main(int argc, char **argv)
         CHECK(dashboard_model_sample(&model, 3000));
         CHECK(dashboard_ui_refresh(&ui));
         pump();
-        CHECK(!dashboard_model_sample(&model, -1));
-        CHECK(dashboard_ui_refresh(&ui));
+        CHECK(lv_obj_send_event(ui.fault_button, LV_EVENT_CLICKED, NULL) == LV_RESULT_OK);
         pump();
         CHECK(model.run == DASHBOARD_FAULT && model.last_valid == 3000);
         CHECK(strstr(lv_label_get_text(ui.error_label), "out of range") != NULL);

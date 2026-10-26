@@ -16,6 +16,7 @@ int main(int argc, char **argv)
     uint32_t elapsed = 0;
     uint32_t last_sample = 0;
     unsigned next_sample = 0;
+    dashboard_run_t previous_run = DASHBOARD_RUNNING;
     lv_init();
     lv_display_t *display = lv_sdl_window_create(240, 280);
     if(display == NULL || lv_sdl_window_get_window(display) == NULL) {
@@ -39,14 +40,21 @@ int main(int argc, char **argv)
         lv_tick_inc(20);
         lv_timer_handler();
         elapsed += 20;
+        if(model.run != previous_run) {
+            if(model.run == DASHBOARD_RUNNING) last_sample = elapsed;
+            previous_run = model.run;
+        }
         if(elapsed - last_sample >= 500 && model.run == DASHBOARD_RUNNING) {
             dashboard_model_sample(&model, samples[next_sample++ % (sizeof(samples) / sizeof(samples[0]))]);
             if(!dashboard_ui_refresh(&ui)) return 1;
             last_sample = elapsed;
         }
     }
-    if(smoke) printf("sdl_smoke: PASS window=%dx%d logical=240x280 samples=%lu\n",
-                     width, height, (unsigned long)model.accepted);
+    if(smoke) {
+        if(model.accepted < 2) return 1;
+        printf("sdl_smoke: PASS window=%dx%d logical=240x280 samples=%lu\n",
+               width, height, (unsigned long)model.accepted);
+    }
     dashboard_ui_destroy(&ui);
     lv_indev_delete(mouse);
     lv_display_delete(display);
