@@ -9,13 +9,13 @@ on:
 jobs:
   host:
     name: ${{ matrix.compiler }} / SDL2 / headless
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         compiler: [gcc, clang]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           submodules: true
       - name: Install build and display dependencies
@@ -39,9 +39,9 @@ jobs:
 
   sanitizers:
     name: ASan + UBSan / LVGL headless
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           submodules: true
       - name: Install Ninja
