@@ -1,0 +1,57 @@
+name: Host GUI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  host:
+    name: ${{ matrix.compiler }} / SDL2 / headless
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [gcc, clang]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Install build and display dependencies
+        run: sudo apt-get update && sudo apt-get install -y ninja-build libsdl2-dev xvfb
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DDASHBOARD_ENABLE_SDL=ON -DCMAKE_C_COMPILER=${{ matrix.compiler }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler == 'clang' && 'clang++' || 'g++' }}
+      - name: Build
+        run: cmake --build build --parallel 4
+      - name: Test real LVGL and SDL window under Xvfb
+        run: xvfb-run -a ctest --test-dir build --output-on-failure
+      - name: Render reproducible LVGL frames
+        run: |
+          mkdir -p artifacts
+          ./build/dashboard_headless normal artifacts/normal.ppm
+          ./build/dashboard_headless fault artifacts/fault.ppm
+          ./build/dashboard_headless interaction artifacts/diagnostics.ppm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lvgl-frames-${{ matrix.compiler }}
+          path: artifacts/*.ppm
+
+  sanitizers:
+    name: ASan + UBSan / LVGL headless
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Install Ninja
+        run: sudo apt-get update && sudo apt-get install -y ninja-build
+      - name: Configure instrumented build
+        run: cmake -S . -B build-san -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' -DCMAKE_CXX_FLAGS='-fsanitize=address,undefined -fno-omit-frame-pointer' -DCMAKE_EXE_LINKER_FLAGS='-fsanitize=address,undefined'
+      - name: Build
+        run: cmake --build build-san --parallel 4
+      - name: Test model and real LVGL headless renderer
+        env:
+          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
+          UBSAN_OPTIONS: halt_on_error=1:print_stacktrace=1
+        run: ctest --test-dir build-san --output-on-failure

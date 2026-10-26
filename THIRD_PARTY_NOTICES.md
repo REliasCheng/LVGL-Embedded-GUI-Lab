@@ -1,13 +1,22 @@
 # Third-Party Notices
 
-## Current Default Branch
+## LVGL
 
-The current default branch distributes no LVGL or lv_drivers source, SquareLine-generated UI, course application, vendor SDK, FreeRTOS component, font data, icon, watch face, external image, or binary component.
+- Upstream: https://github.com/lvgl/lvgl
+- Version: v9.6.0
+- Commit: `80ca777e37a2b176770726a02e07a6fb79ef0b39`
+- License: MIT, retained in the downloaded upstream source.
+- Integration: `third_party/lvgl` is a Git submodule pinned by Git tree SHA. Upstream files retain their own headers and license.
+- Fonts/widgets: only the LVGL built-in default font and widgets are used.
 
-## Referenced Technologies
+## SDL2
 
-Documentation may refer to LVGL, SDL, GD32, CMSIS, FreeRTOS, ST7789, CST816T, and SquareLine Studio for technical context. Their software and assets are not distributed or relicensed by the repository MIT License.
+- Upstream: https://github.com/libsdl-org/SDL
+- License: zlib license for SDL2.
+- Integration: system development package discovered by `pkg-config`; no SDL2 source or binary is committed here.
 
-## Excluded Source Material
+## Repository-owned work
 
-Course UI implementations, generated resources, unknown-rights fonts and images, complete upstream source trees, and vendor files are excluded from the current default branch. Earlier commits remain reachable because repository history was not rewritten.
+The dashboard model, UI, host test backend, build configuration and documentation are original work under the repository MIT license. The root license does not relicense LVGL or SDL2.
+
+Historic course GUI code, SquareLine output, unknown-rights bitmap fonts, icons, images, vendor packages and earlier source material are excluded. Earlier Git commits remain reachable because history was not rewritten.

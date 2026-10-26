@@ -1,87 +1,43 @@
-# LVGL-Embedded-GUI-Lab
+# LVGL Embedded GUI Lab
 
-面向 Cortex-M 的 LVGL 显示、输入、渲染缓冲与事件架构文档实验。
+A real LVGL v9.6.0 host dashboard with a 240 × 280 logical display, a portable C state model, an SDL2 window, and a deterministic headless renderer. Samples are synthetic; this repository has no MCU display or touch driver.
 
-**🖥️ GUI Runtime Pipeline**
+![Host GUI architecture](assets/images/architecture/portfolio-overview.svg)
 
-![Embedded GUI pipeline](assets/images/architecture/portfolio-overview.svg)
+## Build and run
 
-## GUI Snapshot
+Prerequisites: CMake 3.20+, C/C++ compiler, and Ninja or another CMake generator. For the interactive window, install SDL2 development files and `pkg-config` (Ubuntu: `libsdl2-dev pkg-config`). Clone with submodules or run `git submodule update --init --recursive`. The submodule pins the [official LVGL commit](https://github.com/lvgl/lvgl/commit/80ca777e37a2b176770726a02e07a6fb79ef0b39). See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-| GUI Focus | Current Scope |
-| --- | --- |
-| Repository Type | Embedded GUI Architecture Lab |
-| Reference Runtime | LVGL 8.3.11 concepts |
-| Display Model | Draw buffer → flush callback → display interface |
-| Input Model | Touch state → pointer mapping → event dispatch |
-| Public Implementation | Not included in the current default branch |
-| Verification | Architecture review；build, rendering and hardware evidence not provided |
-
-## 📌 Overview
-
-仓库以原创文档和 SVG 整理嵌入式 GUI 的对象、样式、布局、事件、渲染缓冲、display flush、touch input 与 RTOS integration 边界。
-
-当前默认分支不分发 LVGL/lv_drivers 源码、课程 UI、SquareLine 输出、GD32/CMSIS/FreeRTOS 组件、字体、图标、表盘素材或外部图片。ST7789、CST816T 和 PC SDL 仅作为架构参考，不代表当前存在可构建实现。
-
-## 🏗️ Architecture
-
-![LVGL embedded GUI system stack](assets/images/architecture/lvgl-system-stack.svg)
-
-```text
-Application UI / Page State
-            ↓
-Objects / Styles / Layout / Events
-            ↓
-Rendering and Draw Buffer
-            ↓
-Display Port + Input Port
-            ↓
-Display / Touch Hardware Boundary
+```sh
+cmake -S . -B build -G Ninja -DDASHBOARD_ENABLE_SDL=ON
+cmake --build build --parallel
+./build/dashboard_demo
+ctest --test-dir build --output-on-failure
 ```
 
-## ✨ Key Features
+On Windows with MinGW, use `build/dashboard_demo.exe`. If SDL2 is unavailable, omit `-DDASHBOARD_ENABLE_SDL=ON`: the headless LVGL tests still build and run. On a desktopless Linux runner, use `xvfb-run -a ctest --test-dir build --output-on-failure` for the SDL smoke test. The bounded smoke mode is `./build/dashboard_demo --smoke`.
 
-| Capability | Documentation Entry |
-| --- | --- |
-| Porting boundaries | [LVGL Porting](docs/lvgl-porting.md) |
-| Display and flush flow | [Display Pipeline](docs/display-pipeline.md) |
-| Buffer and invalidation model | [Rendering and Buffer](docs/rendering-and-buffer.md) |
-| Input and event mapping | [Input and Events](docs/input-and-events.md) |
-| Widgets and navigation | [Widgets and Layout](docs/widgets-and-layout.md) and [Screen Navigation](docs/screen-navigation.md) |
-| Asset boundary | [Fonts and Images](docs/fonts-and-images.md) |
+To run the three real-renderer scenarios and save frames:
 
-## 📂 Project Structure
-
-```text
-LVGL-Embedded-GUI-Lab/
-├── README.md
-├── LICENSE
-├── THIRD_PARTY_NOTICES.md
-├── assets/images/  # Repository-authored architecture and flow SVG
-└── docs/           # Embedded GUI architecture documentation
+```sh
+mkdir -p artifacts
+./build/dashboard_headless normal artifacts/normal.ppm
+./build/dashboard_headless fault artifacts/fault.ppm
+./build/dashboard_headless interaction artifacts/diagnostics.ppm
 ```
 
-## 📚 Documentation
+`normal` checks UNKNOWN → HIGH → LOW and changing LVGL pixels; `fault` checks invalid sample retention, visible FAULT, recovery and resume; `interaction` presses and releases the LVGL pointer on Pause, Resume and navigation, then sends a Reset event. The tests check actual widgets, active screen, flush count, pixel bounds and framebuffer changes. PPMs are generated locally and ignored by Git; CI uploads them as artifacts.
 
-- [LVGL Porting](docs/lvgl-porting.md)
-- [Display Pipeline](docs/display-pipeline.md)
-- [Rendering and Buffer](docs/rendering-and-buffer.md)
-- [Input and Events](docs/input-and-events.md)
-- [Widgets and Layout](docs/widgets-and-layout.md)
-- [Screen Navigation](docs/screen-navigation.md)
-- [Fonts and Images](docs/fonts-and-images.md)
-- [RTOS Integration](docs/rtos-integration.md)
-- [Development Environment](docs/development-environment.md)
+## Application contract
 
-## 🧪 Verification
+The model in `app/dashboard_model.c` has no LVGL or platform dependency. Valid inputs are 0..4095. Thresholds require `low < high`. The initial level is UNKNOWN; the middle band retains the prior level. Invalid input while running latches FAULT without replacing the last valid sample. Recover clears the fault and enters PAUSED; Resume restarts sampling. Reset clears sequence, counters, last value and level while retaining thresholds. Counters saturate at `UINT32_MAX`. Paused and faulted models do not accept samples.
 
-| Verification Layer | Status | Boundary |
-| --- | --- | --- |
-| Host Test | NOT PROVIDED | No PC SDL implementation is distributed |
-| Build Verification | NOT PROVIDED | No current CMake, Keil, LVGL or driver source is distributed |
-| Hardware Validation | NOT PROVIDED | No reviewable display or touch result |
-| Runtime Evidence | NOT PROVIDED | No screenshot, trace, frame-rate result, or interaction log |
+The GUI owns all LVGL objects in a single thread. The SDL loop advances `lv_tick_inc()` and calls `lv_timer_handler()` every 20 ms. A synthetic sample is offered every 500 ms only while running. Headless tests use the same UI and handler with a 240 × 280 XRGB8888 display, a 40-line draw buffer and a checked flush callback. The UI refresh function reports invalid handles.
 
-## License Boundary
+The dashboard shows ADC value, LOW/HIGH/UNKNOWN, RUNNING/PAUSED/FAULT, sequence, last error and a bar. Pause/Resume/Recover, Reset and Fault are actual event-driven controls. Diagnostics is a separate screen with status, last error, accepted/rejected counts and last valid sample. Fault injects an out-of-range synthetic sample; it is not a hardware fault.
 
-根目录 MIT License 仅覆盖当前默认分支中仓库维护者编写的文档、配置与自绘 SVG。LVGL、lv_drivers、SquareLine 输出、字体、图标、厂商组件和课程 UI 未包含在当前默认分支；历史提交风险单独保留。详见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+## Scope and evidence
+
+GitHub Actions builds GCC and Clang with SDL2, runs all tests plus an SDL window smoke under Xvfb, and separately runs ASan/UBSan over the model and real LVGL headless integration. The historic v8.3.11 porting notes in `docs/` describe a future GD32F407VE / ST7789 / CST816T / FreeRTOS target; they are not a v9 implementation or target validation. The replacement points are the SDL display, pointer and main loop. Target work still needs real display/touch adapters, buffer and DMA lifetime analysis, a GUI task ownership rule, toolchain build and board verification. No board, HEX, touch or FreeRTOS target result is claimed.
+
+The repository's original documentation and SVGs remain. No course UI, SquareLine output, unknown-rights bitmap font, vendor source or third-party image is included in the dashboard. See [provenance and scope](docs/provenance-and-scope.md), [development environment](docs/development-environment.md), and [third-party notices](THIRD_PARTY_NOTICES.md).
