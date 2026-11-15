@@ -183,6 +183,12 @@ int main(int argc, char **argv)
            (unsigned long long)frame_signature(&h));
     dashboard_ui_destroy(&ui);
     CHECK(!dashboard_ui_refresh(&ui));
+    for(int repeat = 0; repeat < 2; ++repeat) {
+        CHECK(dashboard_ui_create(&ui, &model, display));
+        CHECK(lv_display_get_screen_active(display) == ui.main_screen);
+        dashboard_ui_destroy(&ui);
+        CHECK(!dashboard_ui_refresh(&ui));
+    }
     lv_indev_delete(pointer);
     lv_display_delete(display);
     lv_deinit();
