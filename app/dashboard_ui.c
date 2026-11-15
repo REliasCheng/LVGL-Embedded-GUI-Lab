@@ -79,24 +79,28 @@ static void on_back(lv_event_t *event)
 bool dashboard_ui_create(dashboard_ui_t *ui, dashboard_model_t *model, lv_display_t *display)
 {
     lv_obj_t *caption;
+    lv_obj_t *previous_screen;
     if(ui == NULL || model == NULL || display == NULL) return false;
+    previous_screen = lv_display_get_screen_active(display);
     memset(ui, 0, sizeof(*ui));
     ui->model = model;
     ui->display = display;
     ui->main_screen = lv_obj_create(NULL);
     ui->diag_screen = lv_obj_create(NULL);
-    if(ui->main_screen == NULL || ui->diag_screen == NULL) return false;
+    if(ui->main_screen == NULL || ui->diag_screen == NULL) goto fail;
     lv_obj_set_style_bg_color(ui->main_screen, lv_color_hex(0x101B2A), 0);
     lv_obj_set_style_bg_color(ui->diag_screen, lv_color_hex(0x101B2A), 0);
     lv_obj_set_style_text_color(ui->main_screen, lv_color_hex(0xE6F2F4), 0);
     lv_obj_set_style_text_color(ui->diag_screen, lv_color_hex(0xE6F2F4), 0);
     lv_obj_set_style_pad_all(ui->main_screen, 0, 0);
     lv_obj_set_style_pad_all(ui->diag_screen, 0, 0);
-    make_label(ui->main_screen, "EMBEDDED MONITOR", 12, 10);
-    make_label(ui->main_screen, "SYNTHETIC ADC  /  12 BIT", 12, 31);
+    if(make_label(ui->main_screen, "EMBEDDED MONITOR", 12, 10) == NULL) goto fail;
+    if(make_label(ui->main_screen, "SYNTHETIC ADC  /  12 BIT", 12, 31) == NULL) goto fail;
     ui->value_label = make_label(ui->main_screen, "ADC --", 12, 62);
     ui->level_label = make_label(ui->main_screen, "UNKNOWN", 12, 96);
+    if(ui->value_label == NULL || ui->level_label == NULL) goto fail;
     ui->bar = lv_bar_create(ui->main_screen);
+    if(ui->bar == NULL) goto fail;
     lv_obj_set_pos(ui->bar, 12, 123);
     lv_obj_set_size(ui->bar, 216, 15);
     lv_bar_set_range(ui->bar, 0, 4095);
@@ -104,19 +108,26 @@ bool dashboard_ui_create(dashboard_ui_t *ui, dashboard_model_t *model, lv_displa
     lv_obj_set_style_bg_color(ui->bar, lv_color_hex(0x39BCD3), LV_PART_INDICATOR);
     ui->run_label = make_label(ui->main_screen, "RUNNING", 12, 151);
     ui->error_label = make_label(ui->main_screen, "Error: none", 12, 177);
+    if(ui->run_label == NULL || ui->error_label == NULL) goto fail;
     ui->action_button = make_button(ui->main_screen, "Pause", 12, 207, 68, on_action, ui, &ui->action_text);
+    if(ui->action_button == NULL) goto fail;
     ui->reset_button = make_button(ui->main_screen, "Reset", 86, 207, 68, on_reset, ui, &caption);
+    if(ui->reset_button == NULL) goto fail;
     ui->fault_button = make_button(ui->main_screen, "Fault", 160, 207, 68, on_fault, ui, &caption);
+    if(ui->fault_button == NULL) goto fail;
     ui->diag_button = make_button(ui->main_screen, "Diagnostics", 12, 244, 216, on_diag, ui, &caption);
-    make_label(ui->diag_screen, "DIAGNOSTICS", 12, 12);
+    if(ui->diag_button == NULL) goto fail;
+    if(make_label(ui->diag_screen, "DIAGNOSTICS", 12, 12) == NULL) goto fail;
     ui->diag_text = make_label(ui->diag_screen, "", 12, 45);
+    if(ui->diag_text == NULL) goto fail;
     ui->back_button = make_button(ui->diag_screen, "Back to dashboard", 12, 244, 216, on_back, ui, &caption);
-    if(ui->value_label == NULL || ui->level_label == NULL || ui->bar == NULL ||
-       ui->run_label == NULL || ui->error_label == NULL || ui->action_button == NULL ||
-       ui->reset_button == NULL || ui->fault_button == NULL || ui->diag_button == NULL ||
-       ui->diag_text == NULL || ui->back_button == NULL) return false;
+    if(ui->back_button == NULL) goto fail;
     lv_screen_load(ui->main_screen);
-    return dashboard_ui_refresh(ui);
+    if(dashboard_ui_refresh(ui)) return true;
+fail:
+    if(previous_screen != NULL && lv_obj_is_valid(previous_screen)) lv_screen_load(previous_screen);
+    dashboard_ui_destroy(ui);
+    return false;
 }
 
 bool dashboard_ui_refresh(dashboard_ui_t *ui)
